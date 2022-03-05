@@ -25,3 +25,13 @@ cd santity
 &&
 npm start
 ```
+
+### if you want deploy sanity
+
+```
+cd sanity
+&&
+sanity deploy
+```
+
+my api demo is deploy on https://test-123.sanity.studio/
