@@ -22,7 +22,7 @@ function Post({ post }: { post: PostProps }) {
   } = useForm<IFormInput>()
   const [submitted, setSubmitted] = useState(false)
 
-  console.log(post)
+  if (!post) return null
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     await fetch('/api/createComment', {
@@ -30,7 +30,6 @@ function Post({ post }: { post: PostProps }) {
       body: JSON.stringify(data),
     })
       .then(() => {
-        console.log(data)
         setSubmitted(true)
       })
       .catch(() => {
@@ -41,28 +40,30 @@ function Post({ post }: { post: PostProps }) {
   return (
     <main className="m-auto max-w-7xl">
       <Header />
-      <img
-        className="h-40 w-full object-cover"
-        src={urlFor(post.mainImage).url()}
-        alt=""
-      />
+      {post?.mainImage && (
+        <img
+          className="h-40 w-full object-cover"
+          src={urlFor(post?.mainImage)?.url()}
+          alt=""
+        />
+      )}
 
       <article className="mx-auto max-w-3xl p-5">
-        <h1 className="mt-10 mb-3 text-3xl"> {post.title}</h1>
+        <h1 className="mt-10 mb-3 text-3xl"> {post?.title}</h1>
         <h2 className="mb-2 text-xl font-light text-gray-500">
-          {post.description}
+          {post?.description}
         </h2>
 
         <div className="flex items-center space-x-2">
           <img
             className="h-10 w-10 rounded-full object-cover"
-            src={urlFor(post.author.image).url()}
+            src={urlFor(post?.author.image).url()}
             alt=""
           />
           <p className="text-sm font-extralight">
             Blog post by{' '}
-            <span className="text-green-600">{post.author.name}</span> -
-            Published at {new Date(post._createAt).toLocaleDateString()}
+            <span className="text-green-600">{post?.author.name}</span> -
+            Published at {new Date(post?._createAt).toLocaleDateString()}
           </p>
         </div>
 
@@ -70,7 +71,7 @@ function Post({ post }: { post: PostProps }) {
           <PortableText
             dataset={process.env.NEXT_PUBLIC_SANITY_DATASET}
             projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
-            content={post.body}
+            content={post?.body}
             serializers={{
               h1: (props: any) => (
                 <h1 className="my-5 text-2xl font-bold" {...props} />
@@ -114,7 +115,7 @@ function Post({ post }: { post: PostProps }) {
             {...register('_id')}
             type="hidden"
             name="_id"
-            value={post._id}
+            value={post?._id}
           />
 
           <label htmlFor="" className="mb-5 block">
@@ -173,7 +174,7 @@ function Post({ post }: { post: PostProps }) {
       <div className="my-10 mx-auto flex max-w-2xl flex-col space-y-2 p-10 shadow shadow-yellow-500">
         <h3 className="text-4xl">Comments</h3>
         <hr className="pb-2" />
-        {post.comments.map((comment) => (
+        {post?.comments.map((comment) => (
           <div key={comment._id}>
             <p>
               <span className="text-yellow-500">{comment.name}:</span>
@@ -217,6 +218,7 @@ export async function getStaticProps({
     slug: params.slug,
   })
 
+  // console.log(post, '我是參數')
   return {
     props: {
       preview,
@@ -230,7 +232,7 @@ export async function getStaticPaths() {
     groq`*[_type == "post" && defined(slug.current)][].slug.current`
   )
 
-  // console.log(paths)
+  console.log(paths)
 
   return {
     paths: paths.map((slug: string) => ({ params: { slug } })),
