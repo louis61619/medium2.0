@@ -35,3 +35,9 @@ sanity deploy
 ```
 
 my api demo is deploy on https://test-123.sanity.studio/
+
+---
+
+refer: https://www.youtube.com/watch?v=I2dcpatq54o&t=1710s&ab_channel=SonnySangha
+
+
